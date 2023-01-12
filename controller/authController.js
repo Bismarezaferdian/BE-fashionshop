@@ -6,17 +6,33 @@ const jwt = require("jsonwebtoken");
 
 const authController = {
   register: async (req, res) => {
-    const { username, email, password, isAdmin } = req.body;
+    const {
+      firstname,
+      lastname,
+      phonenumber,
+      address,
+      image,
+      email,
+      password,
+      isAdmin,
+    } = req.body;
 
+    const user = await User.findOne({ email: req.body.email });
+    //   !user && res.status(404).send("user not found !"); server langsung err harus di return
+    if (user) return res.status(404).send("user already axist");
     try {
       const newUser = new User({
-        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        phonenumber: phonenumber,
+        address: address,
+        image: image,
         email: email,
+        isAdmin: isAdmin,
         password: CryptoJS.AES.encrypt(
           password,
           process.env.PASS_SEC
         ).toString(),
-        isAdmin: isAdmin,
       });
 
       const saveUser = await newUser.save();
@@ -28,9 +44,9 @@ const authController = {
 
   login: async (req, res) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
+      const user = await User.findOne({ email: req.body.email });
       //   !user && res.status(404).send("user not found !"); server langsung err harus di return
-      if (!user) return res.status(404).send("notfound");
+      if (!user) return res.status(404).send("notfound user");
 
       const inputPassword = CryptoJS.AES.decrypt(
         user.password,
@@ -40,7 +56,7 @@ const authController = {
       const OriginalPassword = inputPassword.toString(CryptoJS.enc.Utf8);
 
       if (OriginalPassword !== req.body.password)
-        return res.status(500).status("wrong password !");
+        return res.status(500).json("wrong password !");
 
       const accessToken = jwt.sign(
         {
@@ -54,10 +70,16 @@ const authController = {
       // console.log(user);
 
       const { password, ...others } = user._doc;
-      res.status(200).json({ ...others, accessToken });
+      res
+        .cookie("token", accessToken, {
+          expires: new Date(Date.now() + 60000),
+          httpOnly: true,
+          path: "/",
+        })
+        .status(200)
+        .json({ ...others });
     } catch (error) {
       res.status(500).json(error);
-      console.log(error);
     }
   },
 };

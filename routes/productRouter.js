@@ -7,7 +7,7 @@ const { verifyAuthorization } = require("./verifyToken");
 router.get("/", productController.getAllProduct);
 router.post("/", productController.addProduct);
 router.get("/find/:id", productController.getProduct);
-router.put("/:idProduct", productController.updatedProduct);
+router.put("/update/:idProduct", productController.updatedProduct);
 router.delete("/:id", productController.deleteProduct);
 
 module.exports = router;

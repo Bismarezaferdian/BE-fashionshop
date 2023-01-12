@@ -24,6 +24,8 @@ const userController = {
   },
 
   getAllUser: async (req, res, next) => {
+    // console.log(req);
+
     try {
       const query = req.query.new;
       const allUser = query

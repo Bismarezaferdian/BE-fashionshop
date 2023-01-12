@@ -7,17 +7,34 @@ const userRoute = require("./routes/userRouter");
 const productRoute = require("./routes/productRouter");
 const cartRoute = require("./routes/cartRouter");
 const orderRoute = require("./routes/orderRouter");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 dotenv.config();
 const port = 3000;
 
-app.use(cors());
+// app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3001",
+  })
+);
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:3001");
+//   res.header("Access-Control-Allow-Credentials", true);
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
+app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/user", userRoute);
-app.use("/api/v1/product", productRoute);
-app.use("/api/v1/cart", cartRoute);
-app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/products", productRoute);
+app.use("/api/v1/carts", cartRoute);
+app.use("/api/v1/orders", orderRoute);
 
 mongoose
   .connect(process.env.MONGO_URL)

@@ -1,11 +1,16 @@
 const jwt = require("jsonwebtoken");
 
+const cekCookie = (req, res) => {
+  console.log(req.cookies);
+};
+
 const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.token;
-  // console.log(authHeader);
+  const authHeader = req.Cookies.token;
+  // const token = req.cookies.access_token;
+  console.log(req.cookies.token);
+
   if (authHeader) {
-    const token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.JWT_SEC, (err, user) => {
+    jwt.verify(authHeader, process.env.JWT_SEC, (err, user) => {
       if (err) res.status(401).json("token not valid");
       req.user = user;
       next();
@@ -17,7 +22,9 @@ const verifyToken = (req, res, next) => {
 
 const verifyAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id || req.user.isAdmin) {
+    console.log(req.user);
+    // if (req.user.id === req.params.id || req.user.isAdmin) {
+    if (req.user.isAdmin) {
       next();
     } else {
       res.status(403).json("you not allow to do that !");
@@ -25,4 +32,4 @@ const verifyAuthorization = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken, verifyAuthorization };
+module.exports = { cekCookie, verifyToken, verifyAuthorization };
