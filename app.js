@@ -6,6 +6,7 @@ const authRoute = require("./routes/authRouth");
 const userRoute = require("./routes/userRouter");
 const productRoute = require("./routes/productRouter");
 const cartRoute = require("./routes/cartRouter");
+const categorieRoute = require("./routes/categorieRoute");
 const orderRoute = require("./routes/orderRouter");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/products", productRoute);
+app.use("/api/v1/categories", categorieRoute);
 app.use("/api/v1/carts", cartRoute);
 app.use("/api/v1/orders", orderRoute);
 

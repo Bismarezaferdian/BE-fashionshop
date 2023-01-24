@@ -8,6 +8,6 @@ router.get("/", userController.getAllUser);
 router.get("/stats", userController.getUserStats);
 router.get("/:id", userController.getUser);
 router.put("/update/:id", verifyAuthorization, userController.updateUser);
-router.delete("/:id", verifyAuthorization, userController.deleteUser);
+router.delete("/delete/:id", verifyAuthorization, userController.deleteUser);
 
 module.exports = router;

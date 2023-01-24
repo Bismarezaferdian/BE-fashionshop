@@ -29,11 +29,14 @@ const productController = {
 
   getAllProduct: async (req, res, next) => {
     const qNew = req.query.new;
+
     const qCategories = req.query.categories;
     try {
       let products;
       if (qNew) {
-        products = await Product.find().sort({ createAt: -1 }).limit(1);
+        products = await Product.find()
+          .sort({ createAt: -1 })
+          .limit(req.query.limit);
       } else if (qCategories) {
         products = await Product.find({ categories: { $in: qCategories } });
       } else {
