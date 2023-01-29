@@ -38,9 +38,7 @@ const productController = {
           .sort({ createAt: -1 })
           .limit(req.query.limit);
       } else if (qCategories) {
-        products = await Product.find({ categories: { $in: qCategories } })
-          .sort({ createAt: -1 })
-          .limit(req.query.limit);
+        products = await Product.find({ categories: { $in: qCategories } });
       } else {
         products = await Product.find();
       }
