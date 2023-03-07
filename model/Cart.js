@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const cartScheema = new Schema({
   userId: { type: String, require: true },
+
   products: [
     {
       _id: { type: String, require: true },
@@ -14,6 +15,7 @@ const cartScheema = new Schema({
       quantity: { type: Number, require: true },
     },
   ],
+  total: { type: Number },
 });
 
 module.exports = mongoose.model("Cart", cartScheema);

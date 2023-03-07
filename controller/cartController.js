@@ -1,9 +1,10 @@
 const Cart = require("../model/Cart");
+const Product = require("../model/Product");
 
 const cartController = {
   getAllcart: async (req, res, next) => {
     try {
-      const cart = await Cart.findOne({ userId: req.body.userId });
+      const cart = await Cart.findOne({ userId: req.params.userId });
       // const carts = await Cart.find();
 
       res.status(200).json(cart);
@@ -25,24 +26,36 @@ const cartController = {
   updateProductChart: async (req, res) => {
     try {
       //cari cart berdasarkan id user
-      const cart = await Cart.findOne({ userId: req.body.userId });
+      const cart = await Cart.findOne({ userId: req.params.userId });
       //jika userId tidak ada create new userId and cart
       if (!cart) {
         const newCart = new Cart({
           userId: req.body.userId,
           products: [req.body.products],
+          total: req.body.products.price * req.body.products.quantity,
         });
         const saveCart = await newCart.save();
         return res.status(200).json(saveCart);
       }
+      // console.log(cart);
       //cari apakah product yang mau di tambahkan ada di product cart
       const existingProductIndex = cart.products.find(
-        (product) => product._id === req.body.products._id
+        (product) =>
+          product._id === req.body.products._id &&
+          product.color === req.body.products.color &&
+          product.size === req.body.products.size
+        //  &&
+        // product.color === req.body.products.color &&
+        // product.size === req.body.products.size
       );
+      // console.log(cart);
+
       //jika tidak ada
+      // console.log(existingProductIndex);
       if (!existingProductIndex) {
         // Push a new product object
         cart.products.push(req.body.products);
+        cart.total += req.body.products.price * req.body.products.quantity;
         // cart.products.push({
         //   _id: req.body.product._id,
         //   title: req.body.product.title,
@@ -54,9 +67,11 @@ const cartController = {
         // });
       } else {
         // Increment the quantity of an existing product
-        existingProductIndex.quantity += req.body.products.quantity;
+        // existingProductIndex.quantity += req.body.products.quantity;
+        existingProductIndex.quantity += 1;
+        cart.total += existingProductIndex.price;
       }
-
+      // console.log(existingProductIndex.quantity, cart.total);
       const newProductCart = await cart.save();
       return res.status(200).json(newProductCart);
     } catch (error) {
@@ -67,29 +82,36 @@ const cartController = {
   //hanya delete product di dalam cart
   deleteProductCart: async (req, res) => {
     try {
-      const cart = await Cart.findOne({ userId: req.body.userId });
-      // console.log(cart);
+      const cart = await Cart.findOne({ userId: req.params.userId });
       //cari product di database berdasarkan id product daru user
 
       if (cart) {
-        console.log("test");
         const productInCart = cart.products.find(
-          (product) => product._id === req.body.products._id
+          (product) =>
+            product._id === req.body.products._id &&
+            product.color === req.body.products.color &&
+            product.size === req.body.products.size
         );
 
         //jika product ada dan quantity nya lebih dari satu
         if (productInCart && productInCart.quantity > 1) {
           //qty di kurangi 1 (untuk button minus )
           productInCart.quantity -= 1;
+          cart.total -= productInCart.price;
+
           //jika prooduct kurangdari samadengan 1
-        } else if (productInCart && productInCart.quantity <= 1) {
+        } else if (productInCart && productInCart.quantity == 1) {
           //delete berdasarkan product id
           cart.products.splice(
             cart.products.findIndex(
-              (item) => item._id === req.body.products._id
+              (product) =>
+                product._id === req.body.products._id &&
+                product.color === req.body.products.color &&
+                product.size === req.body.products.size
             ),
             1
           );
+          cart.total -= productInCart.price;
         }
       }
 

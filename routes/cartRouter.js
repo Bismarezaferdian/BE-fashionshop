@@ -2,10 +2,10 @@ const express = require("express");
 const cartController = require("../controller/cartController");
 const router = express.Router();
 
-router.get("/", cartController.getAllcart);
+router.get("/:userId", cartController.getAllcart);
 router.get("/:id", cartController.getCart);
-router.post("/deleteProductCart/", cartController.deleteProductCart);
-router.post("/", cartController.updateProductChart);
+router.post("/deleteProductCart/:userId", cartController.deleteProductCart);
+router.post("/:userId", cartController.updateProductChart);
 router.delete("/:id", cartController.deleteCart);
 // router.put("/:idChart", cartController.updateCart);
 // router.post("/", cartController.addCart);

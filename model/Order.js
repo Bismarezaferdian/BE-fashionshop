@@ -1,9 +1,14 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const { ObjectId } = mongoose.Schema;
 
 const OrderSchema = new Schema(
   {
     userId: { type: String, require: true },
+    user: {
+      type: ObjectId,
+      ref: "User",
+    },
     products: [
       {
         productId: { type: String },

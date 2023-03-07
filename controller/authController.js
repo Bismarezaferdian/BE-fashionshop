@@ -74,6 +74,7 @@ const authController = {
         .cookie("token", accessToken, {
           expires: new Date(Date.now() + 60000),
           httpOnly: true,
+          sameSite: "Strict",
           path: "/",
         })
         .status(200)

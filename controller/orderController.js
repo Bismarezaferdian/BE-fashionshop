@@ -55,7 +55,10 @@ const orderController = {
 
   getAllOrder: async (req, res) => {
     try {
-      const allOrder = await Order.find();
+      const allOrder = await Order.find().populate({
+        path: "user",
+        select: "_id firstname",
+      });
       res.status(200).json(allOrder);
     } catch (error) {
       res.status(500).json(error);

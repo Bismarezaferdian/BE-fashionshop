@@ -1,19 +1,24 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+var path = require("path");
 const dotenv = require("dotenv");
 const authRoute = require("./routes/authRouth");
 const userRoute = require("./routes/userRouter");
 const productRoute = require("./routes/productRouter");
 const cartRoute = require("./routes/cartRouter");
 const categorieRoute = require("./routes/categorieRoute");
+const categoriesProductsRoute = require("./routes/categoriesProductsRoute");
 const orderRoute = require("./routes/orderRouter");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const cloudinary = require("cloudinary").v2;
+const bodyParser = require("body-parser");
 dotenv.config();
 const port = 3000;
 
 // app.use(cors());
+app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     credentials: true,
@@ -29,6 +34,21 @@ app.use(
 //   );
 //   next();
 // });
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH,OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
+// parse application/json requests
+app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded requests
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1/auth", authRoute);
@@ -37,6 +57,7 @@ app.use("/api/v1/products", productRoute);
 app.use("/api/v1/categories", categorieRoute);
 app.use("/api/v1/carts", cartRoute);
 app.use("/api/v1/orders", orderRoute);
+app.use("/api/v1/catproducts", categoriesProductsRoute);
 
 mongoose
   .connect(process.env.MONGO_URL)
