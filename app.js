@@ -48,7 +48,6 @@ app.use((req, res, next) => {
 // parse application/json requests
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded requests
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1/auth", authRoute);
@@ -58,6 +57,7 @@ app.use("/api/v1/categories", categorieRoute);
 app.use("/api/v1/carts", cartRoute);
 app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/catproducts", categoriesProductsRoute);
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose
   .connect(process.env.MONGO_URL)

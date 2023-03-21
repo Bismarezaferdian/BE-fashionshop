@@ -27,8 +27,8 @@ const ProductSchema = new Schema(
     ],
     // categories: { type: Array },
     //array berisi string
-    size: [String],
-    color: [String],
+    size: { type: Array, require: true },
+    color: { type: Array, require: true },
     stock: { type: Number, require: true },
     price: { type: Number, require: true },
   },
