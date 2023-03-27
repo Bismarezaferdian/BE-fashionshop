@@ -19,12 +19,17 @@ const port = 3000;
 
 // app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(
-  cors({
-    credentials: true,
-    origin: "http://localhost:3001",
-  })
-);
+//model development
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: [
+//       // "http://localhost:3001",
+//       // "http://localhost:3002",
+//       "https://fe-sneakers-three.vercel.app/",
+//     ],
+//   })
+// );
 // app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "http://localhost:3001");
 //   res.header("Access-Control-Allow-Credentials", true);
@@ -47,6 +52,8 @@ app.use((req, res, next) => {
 
 // parse application/json requests
 app.use(bodyParser.json());
+//mode deploy
+app.use(cors());
 // parse application/x-www-form-urlencoded requests
 app.use(cookieParser());
 app.use(express.json());

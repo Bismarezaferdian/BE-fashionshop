@@ -26,34 +26,28 @@ const cartController = {
   updateProductChart: async (req, res) => {
     try {
       //cari cart berdasarkan id user
-      const cart = await Cart.findOne({ userId: req.params.userId });
+      const cart = await Cart.findOne({ userId: req.params.id });
       //jika userId tidak ada create new userId and cart
       if (!cart) {
         const newCart = new Cart({
-          userId: req.body.userId,
+          userId: req.params.id,
           products: [req.body.products],
           total: req.body.products.price * req.body.products.quantity,
         });
         const saveCart = await newCart.save();
         return res.status(200).json(saveCart);
       }
-      // console.log(cart);
       //cari apakah product yang mau di tambahkan ada di product cart
       const existingProductIndex = cart.products.find(
         (product) =>
           product._id === req.body.products._id &&
           product.color === req.body.products.color &&
           product.size === req.body.products.size
-        //  &&
-        // product.color === req.body.products.color &&
-        // product.size === req.body.products.size
       );
-      // console.log(cart);
 
       //jika tidak ada
-      // console.log(existingProductIndex);
       if (!existingProductIndex) {
-        // Push a new product object
+        // Push product kiriman dari user
         cart.products.push(req.body.products);
         cart.total += req.body.products.price * req.body.products.quantity;
         // cart.products.push({
@@ -159,7 +153,6 @@ const cartController = {
   },
 
   //USER DAN ADMIN TIDAK BISA MENAMBAHKAN CART
-
   // addCart: async (req, res) => {
   //   try {
   //     const newCart = new Cart(req.body);

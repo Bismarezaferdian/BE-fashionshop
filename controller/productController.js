@@ -183,7 +183,6 @@ const productController = {
           categorieProduct.push(result);
         }
         req.body.categories = categorieProduct;
-        console.log(req.body);
         const updateProduct = await Product.findByIdAndUpdate(
           products._id,
           {
@@ -196,14 +195,8 @@ const productController = {
         res.status(200).json(updateProduct);
       } else {
         //update color
-        console.log(req.body.categories);
+        // console.log(req.body.categories);
         console.log("tidak ada poto");
-        // const color = req.body.color;
-        // req.body.color = color.split(",");
-
-        // //update size
-        // const size = req.body.size;
-        // req.body.size = size.split(",");
 
         //update categories
         const categorieProduct = [];
@@ -218,6 +211,7 @@ const productController = {
         }
         req.body.categories = categorieProduct;
 
+        console.log(req.body.categories);
         //update all
         const updateProduct = await Product.findByIdAndUpdate(
           products._id,
@@ -233,59 +227,62 @@ const productController = {
         // res.status(200).json(update);
       }
     } catch (error) {
-      const directoryPath = "public/uploads"; // Ganti dengan path direktori yang ingin dicek
-      const imageRegex = /\.(jpg|jpeg|png|gif)$/i; // Regex untuk mencocokkan ekstensi gambar
+      //note: jika ui tidak update gambar req.files dari db tidak akan terkirim
+      //jika ada req.files
+      console.log(req.files);
+      if (req.files.length >= 0) {
+        console.log("ada photo");
+        //cek apakah req.files(img) ada di folder directory
+        const directoryPath = "public/uploads"; // Ganti dengan path direktori yang ingin dicek
+        const imageRegex = /\.(jpg|jpeg|png|gif)$/i; // Regex untuk mencocokkan ekstensi gambar
 
-      fs.readdir(directoryPath, (err, files) => {
-        if (err) {
-          console.error("Error membaca direktori", err);
-          return;
-        }
-        const images = files.filter((file) => imageRegex.test(file));
-        if (images.length > 0) {
-          const imgFiles = [];
-          req.files.map((item) => imgFiles.push(item.filename));
-          const isAbel = images.filter((element) => imgFiles.includes(element));
-          if (isAbel) {
-            console.log(`ada di file ${directoryPath} `);
+        fs.readdir(directoryPath, async (err, files) => {
+          if (err) {
+            console.error("Error membaca direktori", err);
+            return;
           }
-        } else {
-          console.log("Tidak ada file gambar di direktori", directoryPath);
-        }
-      });
-      console.log(error);
+          //files berisi img yang ada difolder directory
+          const images = files.filter((file) => imageRegex.test(file));
+          if (images.length > 0) {
+            //menampung img dari req.files
+            const imgFiles = [];
+            //jika ada req.files push ke imgFiles
+            req.files.map((item) => imgFiles.push(item.filename));
+            //apakah req.files ada di file directory
+            const isReqFile = images.filter((element) =>
+              imgFiles.includes(element)
+            );
+            // //apakah img detail product ada di directory
+            // const isImgDetail = imagesDetails.filter((element) =>
+            //   imgFiles.includes(element)
+            // );
+            // //apakah img display ada di directori
+            // const isImgDisplay = imgFiles.includes(products.imgDisplay.imgId);
 
-      //
-      // //jika error delete image detail from cloudinary
-      // for (let i = 0; i < imgDetail.length; i++) {
-      //   await cloudinary.uploader.destroy(imgDetail[i].publicId);
-      // }
-      // //jika error delete image display from cloudinary
-      // await cloudinary.uploader.destroy(req.body.imgDisplay.publicId);
-      // //jika error delete image from folder public/uploads
-      // for (let i = 0; i < req.files?.length; i++) {
-      //   await fs.unlink(path.join(`public/uploads/${req.files[i].filename}`));
-      // }
-      res.status(500).json(error);
+            if (isReqFile) {
+              for (let i = 0; i < imgDetail.length; i++) {
+                await cloudinary.uploader.destroy(imgDetail[i].publicId);
+              }
+              //jika error delete image display from cloudinary
+              await cloudinary.uploader.destroy(req.body.imgDisplay.publicId);
+              //jika error delete image from folder public/uploads
+              for (let i = 0; i < req.files?.length; i++) {
+                await fs.unlink(
+                  path.join(`public/uploads/${req.files[i].filename}`)
+                );
+              }
+              res.status(500).json(error);
+            }
+          } else {
+            console.log("Tidak ada file gambar di direktori", directoryPath);
+          }
+        });
+      } else {
+        console.log("tidak ada gambar");
+        res.status(500).json(error);
+      }
     }
   },
-
-  // updatedProduct: async (req, res) => {
-  //   try {
-  //     const updatedProduct = await Product.findByIdAndUpdate(
-  //       req.params.idProduct,
-
-  //       {
-  //         $set: req.body,
-  //       },
-  //       { new: true }
-  //     );
-  //     res.status(200).json(updatedProduct);
-  //   } catch (error) {
-  //     res.status(500).json(error);
-  //   }
-  // },
-
   getAllProduct: async (req, res, next) => {
     const qNew = req.query.new;
 
@@ -295,8 +292,9 @@ const productController = {
       if (qNew) {
         products = await Product.find()
           .populate({ path: "categories", select: "id name" })
-          .sort({ createAt: -1 })
+          .sort({ createdAt: -1 })
           .limit(req.query.limit);
+        res.status(200).json(products);
       } else if (qCategories) {
         //qCategories harus tidak ada string/tandapetik
         const categoryIds = await CategoriesProducts.findOne({
@@ -309,17 +307,20 @@ const productController = {
             path: "categories",
             select: "_id name",
           })
-          .sort({ createAt: -1 })
+          .sort({ createdAt: -1 })
           .limit(req.query.limit);
         res.status(200).json(products);
         // products = await Product.find({ categories: { $in: qCategories } })
         // .sort({ createAt: -1 });
         // .limit(req.query.limit);
       } else {
-        products = await Product.find().populate({
-          path: "categories",
-          select: "id name",
-        });
+        products = await Product.find()
+          .populate({
+            path: "categories",
+            select: "id name",
+          })
+          .sort({ createdAt: -1 })
+          .limit(req.query.limit);
         res.status(200).json(products);
       }
     } catch (error) {
