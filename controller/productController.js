@@ -7,13 +7,10 @@ const path = require("path");
 // const cloudinary = require("cloudinary").v2;
 
 const productController = {
-  upload: (req, res) => {
-    console.log(req.files);
-  },
+  upload: (req, res) => {},
   addProduct: async (req, res) => {
     //
     const imgDetail = [];
-    console.log(imgDetail);
     try {
       for (let i = 0; i < req.files?.length; i++) {
         if (req.files[i].fieldname === "imgDetail") {
@@ -31,7 +28,6 @@ const productController = {
             imgUrl: Detail.secure_url,
           };
           imgDetail.push(newImgDetail);
-          console.log(imgDetail);
           // imgDetail.push(Detail.secure_url);
         } else if (req.files[i].fieldname === "imgDisplay") {
           const Display = await cloudinary.uploader.upload(req.files[i].path, {
@@ -65,10 +61,11 @@ const productController = {
       //   // _id: req.body.categories,
       //   _id: { $in: categories },
       // });
-      const color = req.body.color;
-      req.body.color = color.split(",");
-      const size = req.body.size;
-      req.body.size = size.split(",");
+      req.body.variant = JSON.parse(req.body.variant);
+      // // const color = req.body.color;
+      // req.body.color = JSON.parse(req.body.color);
+      // // const size = req.body.size;
+      // req.body.size = JSON.parse(req.body.size);
 
       // console.log(req.body.size, req.body.color);
       req.body.categories = categorieProduct;
@@ -99,16 +96,14 @@ const productController = {
     // fs.access(path.join("public/upload", fileName);
     const imgDetail = [];
     // const categories = JSON.parse(req.body.categories);
-    const size = JSON.parse(req.body.size);
-    const color = JSON.parse(req.body.color);
+    const variant = JSON.parse(req.body.variant);
 
     // req.body.categories = categories;
-    req.body.size = size;
-    req.body.color = color;
+    req.body.variant = variant;
     try {
       // get product berdasarkan id yang dikirim ui
       const products = await Product.findById(req.params.idProduct);
-
+      console.log(req.files.length > 0);
       //jika ada req.files
       if (req.files.length > 0) {
         //loop semua
@@ -194,6 +189,8 @@ const productController = {
         );
         res.status(200).json(updateProduct);
       } else {
+        console.log(req.body);
+        console.log(req.files);
         //update color
         // console.log(req.body.categories);
         console.log("tidak ada poto");
@@ -211,7 +208,6 @@ const productController = {
         }
         req.body.categories = categorieProduct;
 
-        console.log(req.body.categories);
         //update all
         const updateProduct = await Product.findByIdAndUpdate(
           products._id,
