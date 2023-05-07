@@ -1,11 +1,24 @@
-const { default: mongoose } = require("mongoose");
 const Order = require("../model/Order");
+const Product = require("../model/Product");
 
 const orderController = {
   addOrder: async (req, res) => {
+    console.log(req.body.products.length);
     try {
-      const newOrder = new Order(req.body);
-      const saveOrder = await newOrder.save();
+      for (let i = 0; i < req.body.products.length; i++) {
+        console.log(req.body.products[i]);
+        await Product.updateOne(
+          {
+            _id: req.body.products[i].productId,
+            "variant._id": req.body.products[i].variantId,
+          },
+          { $inc: { "variant.$.stock": 7 } },
+          { new: true }
+        );
+      }
+      // const newOrder = new Order(req.body);
+      // const saveOrder = await newOrder.save();
+
       res.status(200).json(saveOrder);
     } catch (error) {
       res.status(500).json(error);

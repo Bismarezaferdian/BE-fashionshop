@@ -13,6 +13,8 @@ const OrderSchema = new Schema(
       {
         productId: { type: String },
         quantity: { type: Number, default: 1 },
+        variantId: { type: String, require: true },
+        qty: { type: Number, require: true },
       },
     ],
     amount: { type: Number, require: true },

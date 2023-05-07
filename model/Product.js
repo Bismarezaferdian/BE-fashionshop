@@ -34,18 +34,6 @@ const ProductSchema = new Schema(
         stock: { type: String, required: true },
       },
     ],
-    // size: [
-    //   {
-    //     name: { type: String, required: true },
-    //     stock: { type: Number, required: true },
-    //   },
-    // ],
-    // color: [
-    //   {
-    //     name: { type: String, required: true },
-    //     stock: { type: Number, required: true },
-    //   },
-    // ],
     // size: { type: Array, require: true },
     // color: { type: Array, require: true },
     stock: { type: Number, require: true },

@@ -28,6 +28,7 @@ const cartController = {
       //cari cart berdasarkan id user
       const cart = await Cart.findOne({ userId: req.params.id });
       //jika userId tidak ada create new userId and cart
+
       if (!cart) {
         const newCart = new Cart({
           userId: req.params.id,
@@ -41,13 +42,15 @@ const cartController = {
       const existingProductIndex = cart.products.find(
         (product) =>
           product._id === req.body.products._id &&
-          product.color === req.body.products.color &&
-          product.size === req.body.products.size
+          product.variant.color === req.body.products.variant.color &&
+          product.variant.size === req.body.products.variant.size
       );
 
       //jika tidak ada
       if (!existingProductIndex) {
         // Push product kiriman dari user
+        //jika data product di ambil dari db product
+
         cart.products.push(req.body.products);
         cart.total += req.body.products.price * req.body.products.quantity;
         // cart.products.push({
@@ -69,6 +72,7 @@ const cartController = {
       const newProductCart = await cart.save();
       return res.status(200).json(newProductCart);
     } catch (error) {
+      console.log(error);
       return res.status(500).json(error);
     }
   },
