@@ -25,18 +25,14 @@ const ProductSchema = new Schema(
         ref: "CategoriesProducts",
       },
     ],
-    // categories: { type: Array },
-    //array berisi string
     variant: [
       {
+        stock: { type: Number, required: true },
         color: { type: String, required: true },
         size: { type: String, required: true },
-        stock: { type: String, required: true },
       },
     ],
-    // size: { type: Array, require: true },
-    // color: { type: Array, require: true },
-    stock: { type: Number, require: true },
+    weight: { type: Number, require: true },
     price: { type: Number, require: true },
   },
   { timestamps: true }

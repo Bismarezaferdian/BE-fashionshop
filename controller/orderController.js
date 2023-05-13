@@ -3,25 +3,27 @@ const Product = require("../model/Product");
 
 const orderController = {
   addOrder: async (req, res) => {
-    console.log(req.body.products.length);
     try {
       for (let i = 0; i < req.body.products.length; i++) {
-        console.log(req.body.products[i]);
+        console.log(req.body.products[i].variant.id);
+        console.log(req.body.products[i]._id);
+        console.log(req.body.products[i].quantity);
         await Product.updateOne(
           {
-            _id: req.body.products[i].productId,
-            "variant._id": req.body.products[i].variantId,
+            _id: req.body.products[i]._id,
+            "variant._id": req.body.products[i].variant.id,
           },
-          { $inc: { "variant.$.stock": 7 } },
+          { $inc: { "variant.$.stock": -req.body.products[i].quantity } },
           { new: true }
         );
       }
-      // const newOrder = new Order(req.body);
-      // const saveOrder = await newOrder.save();
+      const newOrder = new Order(req.body);
+      const saveOrder = await newOrder.save();
 
       res.status(200).json(saveOrder);
     } catch (error) {
       res.status(500).json(error);
+      console.log(error);
     }
   },
 

@@ -24,9 +24,9 @@ const cartController = {
 
   //ADD CART DAN UPDATE/ADD PRODUCT DI DALAM CART
   updateProductChart: async (req, res) => {
+    const cart = await Cart.findOne({ userId: req.params.id });
     try {
       //cari cart berdasarkan id user
-      const cart = await Cart.findOne({ userId: req.params.id });
       //jika userId tidak ada create new userId and cart
 
       if (!cart) {
@@ -34,10 +34,12 @@ const cartController = {
           userId: req.params.id,
           products: [req.body.products],
           total: req.body.products.price * req.body.products.quantity,
+          weight: req.body.products.weight,
         });
         const saveCart = await newCart.save();
         return res.status(200).json(saveCart);
       }
+
       //cari apakah product yang mau di tambahkan ada di product cart
       const existingProductIndex = cart.products.find(
         (product) =>
@@ -52,7 +54,9 @@ const cartController = {
         //jika data product di ambil dari db product
 
         cart.products.push(req.body.products);
+        // console.log(req.body.products.weight);
         cart.total += req.body.products.price * req.body.products.quantity;
+        cart.weight += req.body.products.weight;
         // cart.products.push({
         //   _id: req.body.product._id,
         //   title: req.body.product.title,
@@ -67,12 +71,14 @@ const cartController = {
         // existingProductIndex.quantity += req.body.products.quantity;
         existingProductIndex.quantity += 1;
         cart.total += existingProductIndex.price;
+        cart.weight += req.body.products.weight;
       }
       // console.log(existingProductIndex.quantity, cart.total);
       const newProductCart = await cart.save();
       return res.status(200).json(newProductCart);
     } catch (error) {
       console.log(error);
+      cart.total = 0;
       return res.status(500).json(error);
     }
   },
@@ -96,6 +102,7 @@ const cartController = {
           //qty di kurangi 1 (untuk button minus )
           productInCart.quantity -= 1;
           cart.total -= productInCart.price;
+          cart.weight -= productInCart.weight;
 
           //jika prooduct kurangdari samadengan 1
         } else if (productInCart && productInCart.quantity == 1) {
@@ -110,6 +117,7 @@ const cartController = {
             1
           );
           cart.total -= productInCart.price;
+          cart.weight -= productInCart.weight;
         }
       }
 
@@ -149,6 +157,7 @@ const cartController = {
         res.status(404).json("cart not found");
       } else {
         await Cart.findByIdAndDelete(id);
+        console.log("cart has been delete");
         res.status(200).json("cart has been delete");
       }
     } catch (error) {

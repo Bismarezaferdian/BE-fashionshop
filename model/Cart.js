@@ -9,19 +9,21 @@ const cartScheema = new Schema({
       _id: { type: String, require: true },
       title: { type: String, require: true },
       imgDisplay: { type: String, require: true },
-      // size: { type: String, require: true },
-      // color: { type: String, require: true },
       price: { type: Number, require: true },
       quantity: { type: Number, require: true },
-      productId: { type: String, require: true },
+      // productId: { type: String, require: true },
+      weight: { type: Number, require: true },
+      //seharusnya mengambil dari variant langsung jadi update
       variant: {
         color: { type: String, required: true },
         size: { type: String, required: true },
         stock: { type: Number, required: true },
+        id: { type: String, require: true },
       },
     },
   ],
   qty: { type: Number },
+  weight: { type: Number },
   total: { type: Number },
 });
 

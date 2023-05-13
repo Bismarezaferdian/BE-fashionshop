@@ -11,15 +11,31 @@ const OrderSchema = new Schema(
     },
     products: [
       {
-        productId: { type: String },
-        quantity: { type: Number, default: 1 },
-        variantId: { type: String, require: true },
-        qty: { type: Number, require: true },
+        _id: { type: String, require: true },
+        title: { type: String, require: true },
+        imgDisplay: { type: String, require: true },
+        price: { type: Number, require: true },
+        quantity: { type: Number, require: true },
+        // productId: { type: String, require: true },
+        weight: { type: Number, require: true },
+        //seharusnya mengambil dari variant langsung jadi update
+        variant: {
+          color: { type: String, required: true },
+          size: { type: String, required: true },
+          stock: { type: Number, required: true },
+          id: { type: String, require: true },
+        },
       },
     ],
-    amount: { type: Number, require: true },
-    address: { type: String, require: true },
+    pengiriman: {
+      jasaKirim: { type: String, require: true },
+      service: { type: String, require: true },
+      weight: { type: Number, require: true },
+    },
+    pajak: { type: Number, required: true },
     status: { type: String, default: "pending" },
+    Total: { type: Number, require: true },
+    address: { type: String, require: true },
   },
   { timestamps: true }
 );
