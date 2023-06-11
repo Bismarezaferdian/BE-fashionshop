@@ -21,6 +21,15 @@ const { default: axios } = require("axios");
 dotenv.config();
 const port = 3000;
 
+const connect = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    // console.log("Connected to mongoDB.");
+  } catch (error) {
+    throw error;
+  }
+};
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 //model development
@@ -92,11 +101,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   }
 // });
 
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("connect monggo db "))
-  .catch((err) => console.log(err));
+// mongoose
+//   .connect(process.env.MONGO_URL)
+//   .then(() => console.log("connect monggo db "))
+//   .catch((err) => console.log(err));
 
-app.listen(process.env.PORT_URL || port, () => {
-  console.log(`Example app listening on port ${port}`);
+// app.listen(process.env.PORT_URL || port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
+
+app.listen(process.env.PORT_URL || port, function () {
+  connect();
+  console.log(
+    "Express server listening on port %d in %s mode",
+    this.address().port,
+    app.settings.env
+  );
 });
