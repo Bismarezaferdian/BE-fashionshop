@@ -23,7 +23,9 @@ const port = 3000;
 
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL);
+    await mongoose.connect(
+      "mongodb+srv://admin:admin@cluster0.bjdrpy6.mongodb.net/?retryWrites=true&w=majority"
+    );
     // console.log("Connected to mongoDB.");
   } catch (error) {
     throw error;
