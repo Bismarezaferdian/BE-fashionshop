@@ -19,17 +19,21 @@ const bodyParser = require("body-parser");
 dotenv.config();
 const port = 3000;
 
-const connect = async () => {
-  try {
-    await mongoose.connect(process.env.URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    // console.log("Connected to mongoDB.");
-  } catch (error) {
-    throw error;
-  }
-};
+const uri =
+  "mongodb+srv://admin:admin@cluster0.bjdrpy6.mongodb.net/?retryWrites=true&w=majority"; // Replace with your MongoDB URI
+
+mongoose
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+    // Start your application or perform database operations here
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
@@ -112,7 +116,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // });
 
 app.listen(process.env.PORT_URL || port, function () {
-  connect();
+  // connect();
   console.log(
     "Express server listening on port %d in %s mode",
     this.address().port,
