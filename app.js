@@ -19,8 +19,7 @@ const bodyParser = require("body-parser");
 dotenv.config();
 const port = 8000;
 
-const uri =
-  "mongodb+srv://admin:admin@cluster0.bjdrpy6.mongodb.net/?retryWrites=true&w=majority"; // Replace with your MongoDB URI
+const uri = process.env.URI;
 
 mongoose
   .connect(uri, {
@@ -118,7 +117,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   console.log(`Example app listening on port ${port}`);
 // });
 
-app.listen(port, "0.0.0.0", function () {
+app.listen(process.env.URI || port, "0.0.0.0", function () {
   // connect();
   console.log(
     "Express server listening on port %d in %s mode",
