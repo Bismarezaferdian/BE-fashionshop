@@ -15,15 +15,16 @@ const orderRoute = require("./routes/orderRouter");
 const midtransRoute = require("./routes/midtransRouter");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const cloudinary = require("cloudinary").v2;
 const bodyParser = require("body-parser");
-const { default: axios } = require("axios");
 dotenv.config();
 const port = 3000;
 
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.URI);
+    await mongoose.connect(process.env.URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     // console.log("Connected to mongoDB.");
   } catch (error) {
     throw error;
