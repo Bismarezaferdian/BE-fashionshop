@@ -5,9 +5,9 @@ const orderController = {
   addOrder: async (req, res) => {
     try {
       for (let i = 0; i < req.body.products.length; i++) {
-        console.log(req.body.products[i].variant.id);
-        console.log(req.body.products[i]._id);
-        console.log(req.body.products[i].quantity);
+        // console.log(req.body.products[i].variant.id);
+        // console.log(req.body.products[i]._id);
+        // console.log(req.body.products[i].quantity);
         await Product.updateOne(
           {
             _id: req.body.products[i]._id,

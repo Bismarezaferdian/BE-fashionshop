@@ -19,10 +19,12 @@ const upload = multer({
   //   },
 });
 
-const tempDir = path.join(__dirname, "temp");
-
 const storageMulti = multer.diskStorage({
   destination: function (req, file, cb) {
+    const tempDir = path.join(__dirname, "temp");
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir);
+    }
     cb(null, tempDir);
   },
   filename: (req, file, cb) => {

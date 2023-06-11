@@ -34,7 +34,7 @@ const OrderSchema = new Schema(
     },
     pajak: { type: Number, required: true },
     status: { type: String, default: "pending" },
-    Total: { type: Number, require: true },
+    total: { type: Number, require: true },
     address: { type: String, require: true },
   },
   { timestamps: true }
