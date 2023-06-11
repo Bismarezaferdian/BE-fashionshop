@@ -24,19 +24,20 @@ const port = 3000;
 // app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 //model development
-// app.use(
-//   cors({
-//     credentials: true,
-//     origin: [
-//       "http://localhost:3001",
-//       "http://localhost:3002",
-//       "http://192.168.76.80:3001",
-//       " https://api.rajaongkir.com/starter",
-//       "https://fe-sneakers-three.vercel.app/",
-//       "https://app.sandbox.midtrans.com/snap/v1/transactions",
-//     ],
-//   })
-// );
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      "http://localhost:3001",
+      "http://localhost:3002",
+      "http://192.168.76.80:3001",
+      " https://api.rajaongkir.com/starter",
+      "https://fe-sneakers-three.vercel.app/",
+      "https://app.sandbox.midtrans.com/snap/v1/transactions",
+      "https://be-fashionshop-production.up.railway.app/",
+    ],
+  })
+);
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", true);
