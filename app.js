@@ -29,7 +29,7 @@ app.use(
     credentials: true,
     origin: [
       "http://localhost:3001",
-      "http://localhost:3002",
+      // "http://localhost:3002",
       "http://192.168.76.80:3001",
       " https://api.rajaongkir.com/starter",
       "https://fe-sneakers-three.vercel.app/",
