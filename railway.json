@@ -1,9 +1,0 @@
-{
-    "build": {
-      "builder": "npm:node@12",
-      "command": "npm install"
-    },
-    "start": {
-      "command": "node app.js"
-    }
-  }
