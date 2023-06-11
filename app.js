@@ -88,6 +88,9 @@ app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/catproducts", categoriesProductsRoute);
 app.use("/api/v1/cekOngkir", ongkirRoute);
 app.use("/api/v1/midtrans/transaction", midtransRoute);
+app.use("/", (req, res) => {
+  res.send("welcome to server");
+});
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //midtrans
