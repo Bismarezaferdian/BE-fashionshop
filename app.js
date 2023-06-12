@@ -18,17 +18,14 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 dotenv.config();
 
-const port = 8000;
-
-mongoose
-  .connect(process.env.URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    // Start your application or perform database operations here
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+const connect = () => {
+  try {
+    mongoose.connect(process.env.URI);
+    // console.log("Connected to mongoDB.");
+  } catch (error) {
+    throw error;
+  }
+};
 
 app.use(express.static(path.join(__dirname, "public")));
 //model development
@@ -93,12 +90,8 @@ app.use("/", (req, res) => {
 //   .then(() => console.log("connect monggo db "))
 //   .catch((err) => console.log(err));
 
-// app.listen(process.env.PORT_URL || port, () => {
-//   console.log(`Example app listening on port ${port}`);
-// });
-
-app.listen(process.env.PORT_URL || port, function () {
-  // connect();
+app.listen(process.env.PORT || 8000, function () {
+  connect();
   console.log(
     "Express server listening on port %d in %s mode",
     this.address().port,
