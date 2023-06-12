@@ -114,7 +114,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   console.log(`Example app listening on port ${port}`);
 // });
 
-app.listen(process.env.URI || port, "0.0.0.0", function () {
+app.listen(process.env.PORT_URL || port, function () {
   // connect();
   console.log(
     "Express server listening on port %d in %s mode",
