@@ -81,9 +81,6 @@ app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/catproducts", categoriesProductsRoute);
 app.use("/api/v1/cekOngkir", ongkirRoute);
 app.use("/api/v1/midtrans/transaction", midtransRoute);
-app.use("/", (req, res) => {
-  res.send("welcome to server");
-});
 
 // mongoose
 //   .connect(process.env.MONGO_URL)
