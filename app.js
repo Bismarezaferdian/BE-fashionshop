@@ -17,9 +17,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 dotenv.config();
-const port = 8000;
 
-// const uri = process.env.URI;
+const port = 8000;
 
 mongoose
   .connect(process.env.URI)
@@ -31,23 +30,22 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 //model development
-app.use(
-  cors({
-    credentials: true,
-    origin: [
-      "http://localhost:3001",
-      // "http://localhost:3002",
-      "http://192.168.76.80:3001",
-      " https://api.rajaongkir.com/starter",
-      "https://fe-sneakers-three.vercel.app/",
-      "https://app.sandbox.midtrans.com/snap/v1/transactions",
-      "https://be-fashionshop-production.up.railway.app/",
-    ],
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: [
+//       "http://localhost:3001",
+//       // "http://localhost:3002",
+//       "http://192.168.76.80:3001",
+//       " https://api.rajaongkir.com/starter",
+//       "https://fe-sneakers-three.vercel.app/",
+//       "https://app.sandbox.midtrans.com/snap/v1/transactions",
+//       "https://be-fashionshop-production.up.railway.app/",
+//     ],
+//   })
+// );
 // app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   res.header("Access-Control-Allow-Credentials", true);
@@ -58,23 +56,25 @@ app.use(
 //   next();
 // });
 
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, PUT, DELETE, PATCH,OPTIONS"
-//   );
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH,OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
 // parse application/json requests
-app.use(bodyParser.json());
 //mode deploy
-// app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 // parse application/x-www-form-urlencoded requests
+// app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
+
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/products", productRoute);
@@ -87,23 +87,6 @@ app.use("/api/v1/midtrans/transaction", midtransRoute);
 app.use("/", (req, res) => {
   res.send("welcome to server");
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-
-//midtrans
-// Definisikan endpoint untuk meneruskan permintaan dari frontend ke server API Midtrans
-// app.post("/api/midtrans/transactions", async (req, res) => {
-//   const apiUrl = "https://app.sandbox.midtrans.com/snap/v1/transactions"; // Ganti dengan URL API Midtrans yang sesuai
-
-//   // Meneruskan permintaan ke server API Midtrans menggunakan modul 'request'
-
-//   try {
-//     const response = await axios.post(apiUrl, req.body);
-//     res.send(response.data); // Mengirimkan respons dari server API Midtrans kembali ke frontend
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
 
 // mongoose
 //   .connect(process.env.MONGO_URL)
