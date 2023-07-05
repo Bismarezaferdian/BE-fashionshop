@@ -19,7 +19,7 @@ const authController = {
 
     const user = await User.findOne({ email: req.body.email });
     //   !user && res.status(404).send("user not found !"); server langsung err harus di return
-    if (user) return res.status(404).send("user already axist");
+    if (user) return res.status(404).send("email already axist");
     try {
       const newUser = new User({
         firstname: firstname,
@@ -46,7 +46,7 @@ const authController = {
     try {
       const user = await User.findOne({ email: req.body.email });
       //   !user && res.status(404).send("user not found !"); server langsung err harus di return
-      if (!user) return res.status(404).send("notfound user");
+      if (!user) return res.status(404).send("notfound user !");
 
       const inputPassword = CryptoJS.AES.decrypt(
         user.password,

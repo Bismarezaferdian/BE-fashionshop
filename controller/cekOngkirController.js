@@ -64,6 +64,7 @@ const cekOngkirController = {
       res.status(200).json(response.data.rajaongkir.results);
     } catch (error) {
       console.log(error);
+      console.log("eeror ");
     }
   },
 };

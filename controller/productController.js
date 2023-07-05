@@ -75,7 +75,6 @@ const productController = {
       res.status(200).json(saveProduct);
     } catch (error) {
       console.log(error);
-      console.log(req.files.length > 0);
       if (req.files.length > 0) {
         //jika error delete image detail from cloudinary
         for (let i = 0; i < imgDetail.length; i++) {
@@ -103,7 +102,6 @@ const productController = {
     try {
       // get product berdasarkan id yang dikirim ui
       const products = await Product.findById(req.params.idProduct);
-      console.log(req.files.length > 0);
       //jika ada req.files
       if (req.files.length > 0) {
         //loop semua
@@ -189,11 +187,11 @@ const productController = {
         );
         res.status(200).json(updateProduct);
       } else {
-        console.log(req.body);
-        console.log(req.files);
+        // console.log(req.body);
+        // console.log(req.files);
         //update color
         // console.log(req.body.categories);
-        console.log("tidak ada poto");
+        // console.log("tidak ada poto");
 
         //update categories
         const categorieProduct = [];
@@ -225,9 +223,7 @@ const productController = {
     } catch (error) {
       //note: jika ui tidak update gambar req.files dari db tidak akan terkirim
       //jika ada req.files
-      console.log(req.files);
       if (req.files.length >= 0) {
-        console.log("ada photo");
         //cek apakah req.files(img) ada di folder directory
         const directoryPath = "public/uploads"; // Ganti dengan path direktori yang ingin dicek
         const imageRegex = /\.(jpg|jpeg|png|gif)$/i; // Regex untuk mencocokkan ekstensi gambar

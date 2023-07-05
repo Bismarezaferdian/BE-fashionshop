@@ -18,6 +18,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 dotenv.config();
 
+// const port = 8000;
+
 const connect = () => {
   try {
     mongoose.connect(process.env.URI);
@@ -53,6 +55,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //   next();
 // });
 
+app.use(cors());
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -66,7 +70,6 @@ app.use((req, res, next) => {
 // parse application/json requests
 //mode deploy
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
 // parse application/x-www-form-urlencoded requests
 // app.use(bodyParser.json());
 app.use(cookieParser());
@@ -81,6 +84,9 @@ app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/catproducts", categoriesProductsRoute);
 app.use("/api/v1/cekOngkir", ongkirRoute);
 app.use("/api/v1/midtrans/transaction", midtransRoute);
+// app.use("/", (req, res) => {
+//   res.send("welcome to server");
+// });
 
 // mongoose
 //   .connect(process.env.MONGO_URL)

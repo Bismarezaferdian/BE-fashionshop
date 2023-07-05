@@ -3,24 +3,48 @@ const Product = require("../model/Product");
 
 const orderController = {
   addOrder: async (req, res) => {
+    const userId = await Order.findOne({ userId: req.body.userId });
     try {
-      for (let i = 0; i < req.body.products.length; i++) {
-        // console.log(req.body.products[i].variant.id);
-        // console.log(req.body.products[i]._id);
-        // console.log(req.body.products[i].quantity);
-        await Product.updateOne(
-          {
-            _id: req.body.products[i]._id,
-            "variant._id": req.body.products[i].variant.id,
-          },
-          { $inc: { "variant.$.stock": -req.body.products[i].quantity } },
-          { new: true }
-        );
-      }
-      const newOrder = new Order(req.body);
-      const saveOrder = await newOrder.save();
+      if (!userId) {
+        for (let i = 0; i < req.body.products.product.length; i++) {
+          await Product.updateOne(
+            {
+              _id: req.body.products.product[i]._id,
+              "variant._id": req.body.products.product[i].variant.id,
+            },
+            {
+              $inc: {
+                "variant.$.stock": -req.body.products.product[i].quantity,
+              },
+            },
+            { new: true }
+          );
+        }
+        const newOrder = new Order(req.body);
+        const saveOrder = await newOrder.save();
+        res.status(200).json(saveOrder);
+      } else {
+        userId.products.push(req.body.products);
+        for (let i = 0; i < req.body.products.product.length; i++) {
+          await Product.updateOne(
+            {
+              _id: req.body.products.product[i]._id,
+              "variant._id": req.body.products.product[i].variant.id,
+            },
+            {
+              $inc: {
+                "variant.$.stock": -req.body.products.product[i].quantity,
+              },
+            },
+            { new: true }
+          );
+          // const newOrder = new Order(userId);
+          const saveOrder = await userId.save();
 
-      res.status(200).json(saveOrder);
+          console.log(req.body.products);
+          res.status(200).json(req.body.product);
+        }
+      }
     } catch (error) {
       res.status(500).json(error);
       console.log(error);
@@ -61,7 +85,7 @@ const orderController = {
 
   getOrder: async (req, res) => {
     try {
-      const order = await Order.findById(req.params.idUser);
+      const order = await Order.findOne({ userId: req.params.idUser });
       res.status(200).json(order);
     } catch (error) {
       res.status(500).json(error);

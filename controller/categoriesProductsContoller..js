@@ -52,7 +52,7 @@ const categoriesProductsController = {
       const categoriesProducts = await CategoriesProducts.findById(
         req.params.id
       );
-      console.log(categoriesProducts);
+      // console.log(categoriesProducts);
       if (!categoriesProducts) {
         res.status(404).json("Product not found");
       }

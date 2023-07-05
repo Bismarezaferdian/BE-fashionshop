@@ -25,10 +25,11 @@ const MidtransController = {
 
   cekStatus: async (req, res) => {
     try {
-      const orderId = req.params.orderId;
+      const idMidtrans = req.params.idMidtrans;
+      // const orderId = req.params.orderId;
       const url = process.env.GETSTATUS_MIDTRANS_URL.replace(
         "${ORDER_ID}",
-        orderId
+        idMidtrans
       );
 
       const headers = {
@@ -43,8 +44,8 @@ const MidtransController = {
       });
 
       await Order.updateOne(
-        { _id: orderId },
-        { $set: { status: response.data.transaction_status } },
+        { "products.idOrderMidtrans": idMidtrans },
+        { $set: { "products.$.status": response.data.transaction_status } },
         {
           new: true,
         }
